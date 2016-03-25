@@ -20,9 +20,9 @@ import hashlib
 import ast
 BLOCK_SIZE = 32
 PADDING = '{'
-pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+pad = lambda s: s + (BLOCK_SIZE - len(s.encode()) % BLOCK_SIZE) * PADDING
 EncodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
-DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
+DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).decode().rstrip(PADDING)
 
 def encrypt(string, secret):
     encoded = EncodeAES(AES.new(secret), string)
@@ -42,6 +42,6 @@ def save(to_save, filename="db.thing", secret="gkgkjlekgjlrkejglkrfb,mfdnemfn,d"
     string = str(to_save)
     encrypted = encrypt(string, secret)
     f = open(filename, "w")
-    f.write(encrypted)
+    f.write(encrypted.decode())
     f.close()
     return to_save
